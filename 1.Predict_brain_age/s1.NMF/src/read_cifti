@@ -1,0 +1,26 @@
+
+% get sbj list
+sbjListFile = '/home/cxpang/matlab/hcp_sbjLst.txt';
+disp('Get subject list...');
+fid = fopen(sbjListFile,'r');
+sbjList = textscan(fid,'%s');
+fclose(fid);
+for si=1:length(sbjList{1})
+    
+    
+    if exist(fileName,'file')
+        fileName = sbjList{1}{si};
+        Job_Name = ['idemo_' num2str(si)];
+        pipeline.(Job_Name).command = 'my_cifti(opt.para1,opt.para2)';
+        pipeline.(Job_Name).opt.para1 = fileName;
+        pipeline.(Job_Name).opt.para2 = si;
+        disp([num2str(si),'. ',fileName]);
+        %cii = ciftiopen(fileName,wbPath);   % contain cii.cdata: vNum
+        %Xtnum
+        %cii=ft_read_cifti(fileName);
+     
+    else
+        disp('  this file does not exist !');
+        continue;
+    end
+end
