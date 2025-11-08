@@ -1,4 +1,4 @@
-addpath(genpath('/home/cxpang/matlab/code/8.brain_age'));
+
 method='NGSR'
 load dida
 voxel_num=45892;
