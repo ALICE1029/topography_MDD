@@ -146,7 +146,7 @@ for i=1:20
 end
 nan_rows = any(isnan(mae_site_all), 2);
 mae_site_all = mae_site_all(~nan_rows, :);
-[p,tbl,stats] = anova1(mae_site_all);%单因素一元方差分析
+[p,tbl,stats] = anova1(mae_site_all);
 [c,~,~,gnames] = multcompare(stats);
 %% all hc to mdd model
 ResultantFolder = [data_dir,'/SVR_all_no_regress_fold20_remove65sex'];
@@ -213,38 +213,9 @@ std(mdd_all_gap)
 save('/home/cxpang/matlab/code/8.brain_age/adjusted_mdd_all_gap_remove65sex.mat','adjusted_mdd_all_gap')
 [h,p,~,stats]=ttest2(ad_gap_new,adjusted_mdd_all_gap);
 %% mdd analyse
-load('/HeLabData2/cxpang/DIDA/NGSR/result_xy/brain_age/mdd_all_res_remove65sex.mat','Predicted_Scores','test_score')
-load ('/HeLabData2/cxpang/DIDA/using_mat/site_remove65.mat')
-load ('/HeLabData2/cxpang/DIDA/using_mat/glmvariable_remove65.mat')
-mdd=find(group==2);
-site_mdd=site(mdd);
-age_mdd=age(mdd);
-adjusted_all_gap_age=cell(6,1);
-thre=10;
-for i=1:6
-    pos=find(age_mdd>=thre&age_mdd<thre+10);
-    thre=thre+10;
-    x_tmp=Predicted_Scores(pos);
-    y_tmp=test_score(pos);
-    adjusted_all_gap_age{i}=adjusted_mdd_all_gap(pos);
-    age_ad_mae(i)=mean(abs(adjusted_mdd_all_gap(pos)));
-    age_ad_gap(i)=mean((adjusted_mdd_all_gap(pos)));
-    age_ad_gap_s(i)=std((adjusted_mdd_all_gap(pos)));
-    
-    %corr_age(i)=corr(x_tmp,y_tmp);
-    mae_age(i)=mean(abs(x_tmp-y_tmp));
-end
-
-
 for i=1:10
     pos=find(site_mdd==i);
     x_tmp=Predicted_Scores(pos);
     y_tmp=test_score(pos);
     save(strcat('/home/cxpang/matlab/code/8.brain_age/plot/mdd_',num2str(i),'xy'),'x_tmp','y_tmp')
-    site_ad_mae(i)=mean(abs(adjusted_mdd_all_gap(pos)));
-    mae_site(i)=mean(abs(x_tmp-y_tmp));
-    site_ad_gap(i)=mean((adjusted_mdd_all_gap(pos)));
-    site_ad_gap_s(i)=std((adjusted_mdd_all_gap(pos)));
-    mean_age(i)=mean(y_tmp);
-    std_age(i)=std(y_tmp);
 end
