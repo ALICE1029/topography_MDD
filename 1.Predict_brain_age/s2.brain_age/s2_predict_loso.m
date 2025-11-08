@@ -1,5 +1,4 @@
 %%
-addpath(genpath('/home/cxpang/matlab/code/8.brain_age'));
 method='NGSR'
 load dida
 voxel_num=45892;
@@ -31,7 +30,7 @@ for center=1:10
     % all hc to mdd model
     ResultantFolder = [data_dir,'/SVR_all_no_regress_fold20_remove65sex'];
     Pre_Method = 'Normalize';
-    [slm,model,MeanValue,StandardDeviation] = SVR_all(covariate,Subjects_Data, Subjects_Scores,Pre_Method,0, ResultantFolder);
+    [slm,model,MeanValue,StandardDeviation] = SVR_all(covariate,Subjects_Data, Subjects_Scores,Pre_Method,C_Range, ResultantFolder);
     clear Subjects_Data
     clear Subjects_Scores
     load(strcat('/home/cxpang/matlab/code/8.brain_age/using_mat/covariate_mdd_remove65.mat'))
