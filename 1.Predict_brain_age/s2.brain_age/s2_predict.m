@@ -1,6 +1,5 @@
 %%
 addpath(genpath('/home/cxpang/matlab/surfstat'));
-addpath(genpath('/home/cxpang/matlab/code/8.brain_age'));
 method='NGSR'
 load dida
 voxel_num=45892;
@@ -20,7 +19,7 @@ C_Range =1%power(10, -5:5);
 Weight_Flag = 0;    `
 Permutation_Flag = 0;
 randNet = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18];
-[Prediction] = pca_svr(Subjects_Data, Subjects_Scores,covariate,FoldQuantity, Pre_Method, C_Range, network_num,voxel_num,voxel_num,network_num,randNet,Weight_Flag, Permutation_Flag, ResultantFolder);
+[Prediction] = pca_svr(Subjects_Data, Subjects_Scores,covariate,FoldQuantity, Pre_Method, C_Range, ResultantFolder);
 x=[];
 y=[];
 for i=1:20
