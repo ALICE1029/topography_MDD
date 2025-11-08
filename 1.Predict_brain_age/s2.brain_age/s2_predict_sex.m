@@ -1,4 +1,3 @@
-addpath(genpath('/home/cxpang/matlab/code/8.brain_age'));
 method='NGSR'
 load dida
 voxel_num=45892;
@@ -27,7 +26,7 @@ C_Range =1%power(10, -5:5);
 Weight_Flag = 0;
 Permutation_Flag = 0;
 randNet = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18];
-[Prediction] = pca_svr_noco(Subjects_Data, Subjects_Scores,FoldQuantity, Pre_Method, C_Range, network_num,voxel_num,voxel_num,network_num,randNet,Weight_Flag, Permutation_Flag, ResultantFolder);
+[Prediction] = pca_svr_noco(Subjects_Data, Subjects_Scores,FoldQuantity, Pre_Method, C_Range,  ResultantFolder);
 
 %% all hc to mdd model
 
@@ -151,7 +150,7 @@ adjusted_mdd_all_gap_sex=mdd_all_gap-yfit; % corrected age gap
 
 load('/home/cxpang/matlab/code/8.brain_age/adjusted_mdd_all_gap_remove65sex.mat','adjusted_mdd_all_gap')
 load(strcat('/home/cxpang/matlab/code/8.brain_age/using_mat/covariate_mdd_remove65.mat'))
-pos=find(sex==2);
+pos=find(sex==1);
 tmp=adjusted_mdd_all_gap(pos);
 number_center=0;
 for j=1:length(pos)
