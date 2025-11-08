@@ -1,4 +1,4 @@
-function [Prediction] = pca_svr_noco(Subjects_Data, Subjects_Scores,FoldQuantity, Pre_Method, C_Range, Netnum, Netfea,Voxelfe,Network_fs_num,randNet,Weight_Flag, Permutation_Flag, ResultantFolder)
+function [Prediction] = pca_svr_noco(Subjects_Data, Subjects_Scores,FoldQuantity, Pre_Method, C_Range, ResultantFolder)
 
 if nargin >= 8
     if ~exist(ResultantFolder, 'dir')
