@@ -1,4 +1,4 @@
-function [Prediction] = pca_svr(Subjects_Data, Subjects_Scores,covariate,FoldQuantity, Pre_Method, C_Range, Netnum, Netfea,Voxelfe,Network_fs_num,randNet,Weight_Flag, Permutation_Flag, ResultantFolder)
+function [Prediction] = pca_svr(Subjects_Data, Subjects_Scores,covariate,FoldQuantity, Pre_Method, C_Range, ResultantFolder)
 
 if ~exist(ResultantFolder, 'dir')
     mkdir(ResultantFolder);
