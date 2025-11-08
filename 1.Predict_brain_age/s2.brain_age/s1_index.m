@@ -1,11 +1,10 @@
-addpath(genpath('/home/cxpang/matlab/code/8.brain_age'));
 load dida
 voxel_num=45892;
 network_num=18;
 method='NGSR';
 addpath(genpath('/home/cxpang/matlab/combat'))
 %% hc index_generate
-load ('/HeLabData2/cxpang/DIDA/using_mat/glmvariable.mat')
+load ('/HeLabData2/cxpang/DIDA/using_mat/variable.mat')
 load ('/HeLabData2/cxpang/DIDA/using_mat/site.mat')
 new_index=find(age>=65);
 age(new_index)=[];
@@ -13,8 +12,8 @@ mfd(new_index)=[];
 sex(new_index)=[];
 group(new_index)=[];
 site(new_index)=[];
-load('/HeLabData2/cxpang/DIDA/using_mat/glmvariable_remove65.mat','age','sex','mfd','group')
-load('/HeLabData2/cxpang/DIDA/using_mat/site_remove65.mat','site')
+save('/HeLabData2/cxpang/DIDA/using_mat/glmvariable_remove65.mat','age','sex','mfd','group')
+save('/HeLabData2/cxpang/DIDA/using_mat/site_remove65.mat','site')
 %% load loading matrix
 x=zeros(voxel_num*network_num,length(list_cell));
 %prepare for combat
@@ -72,8 +71,8 @@ for j=1:network_num
 end
 clear y
 clear y_net
-load(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/y_all_remove65.mat'),'y_all')
-%%
+save(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/y_all_remove65.mat'),'y_all')
+%% feature :loading matrix hc
 load(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/after_combat/variable_combat_remove65.mat'),'x_tmp')
 hc=find(group==1);
 site=site(hc);
@@ -87,7 +86,7 @@ x_tmp (pos,:) = [];
 loading=x_tmp';%sub*()
 save(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/brain_age/loading_hc_remove65.mat'),'loading')
 
-%% feature 1:loading matrix mdd
+%% feature :loading matrix mdd
 load('/HeLabData2/cxpang/DIDA/using_mat/glmvariable_remove65.mat','age','sex','mfd','group')
 mdd=find(group==2);
 age=age(mdd);
@@ -100,25 +99,4 @@ x_tmp=x_tmp(:,mdd);
 x_tmp (pos,:) = [];
 loading=x_tmp';
 save(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/brain_age/loading_mdd_remove65.mat'),'loading')
-%% demographic information comparison
-for i=1:10
-tmp=intersect(find(site==i),find(group==2));
-tmp2=sex(tmp);
-sex_site_mdd(i)=length(find(tmp2==1));
-age_site_mdd(i)=mean(age(tmp));
-age_site_mdd_std(i)=std(age(tmp));
-mfd_site_mdd(i)=mean(mfd(tmp));
-mfd_site_mdd_std(i)=std(mfd(tmp));
 
-tmp3=intersect(find(site==i),find(group==1));
-tmp4=sex(tmp3);
-sex_site_hc(i)=length(find(tmp4==1));
-age_site_hc(i)=mean(age(tmp3));
-age_site_hc_std(i)=std(age(tmp3));
-mfd_site_hc(i)=mean(mfd(tmp3));
-mfd_site_hc_std(i)=std(mfd(tmp3));
-[t_mfd(i),p_mfd(i), ci,stats]=ttest2(mfd(tmp),mfd(tmp3));
-t_mfd(i)=stats.tstat;
-[t_age(i),p_age(i), ci, stats]=ttest2(age(tmp),age(tmp3));
-t_age(i)=stats.tstat;
-end
