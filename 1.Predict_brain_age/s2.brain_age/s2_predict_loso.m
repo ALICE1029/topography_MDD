@@ -27,8 +27,7 @@ for center=1:10
     C_Range =1%power(10, -5:5);
     Weight_Flag = 0;
     Permutation_Flag = 0;
-    randNet = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18];
-    [Prediction] = pca_svr(Subjects_Data, Subjects_Scores,covariate,FoldQuantity, Pre_Method, C_Range, network_num,voxel_num,voxel_num,network_num,randNet,Weight_Flag, Permutation_Flag, ResultantFolder);
+    [Prediction] = pca_svr(Subjects_Data, Subjects_Scores,covariate,FoldQuantity, Pre_Method, ResultantFolder);
     % all hc to mdd model
     ResultantFolder = [data_dir,'/SVR_all_no_regress_fold20_remove65sex'];
     Pre_Method = 'Normalize';
