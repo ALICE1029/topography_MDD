@@ -75,28 +75,7 @@ end
 data = [id, ad_gap_new];
 sorted_data = sortrows(data, 1);
 ad_gap_new_sort=sorted_data(:,2);
-
 mean(abs(ad_gap_new_sort))%adj mae
-load ('/HeLabData2/cxpang/DIDA/using_mat/site_remove65.mat')
-load ('/HeLabData2/cxpang/DIDA/using_mat/glmvariable_remove65.mat')
-hc=find(group==1);
-site=site(hc);
-age=age(hc);
-thre=10;
-for i=1:6
-    pos=find(age>=thre&age<thre+10);
-    thre=thre+10;
-    ad_age_mae(i)=mean(abs(ad_gap_new_sort(pos)));
-    ad_age_gap(i)=mean((ad_gap_new_sort(pos)));
-    ad_age_gap_s(i)=std((ad_gap_new_sort(pos)));
-end
-site_hc=site';
-for i=1:10
-    pos=find(site_hc==i);
-    ad_site_mae(i)=mean(abs(ad_gap_new_sort(pos)));
-    ad_site_gap(i)=mean(ad_gap_new_sort(pos));
-    ad_site_gap_s(i)=std(ad_gap_new_sort(pos));
-end
 save('/home/cxpang/matlab/code/8.brain_age/adjusted_all_gap_remove65sex_new.mat','ad_gap_new')
 Idx=zeros(1065,1);
 Idx(find(ad_gap_new_sort<0))=1;
