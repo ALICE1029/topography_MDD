@@ -31,59 +31,6 @@ mae=mean(abs(x-y));
 all_gap= x-y;
 mean(all_gap)
 std(all_gap)
-%% hc gap analyse
-load(strcat(data_dir,'/SVR_all_no_regress_fold20_remove65sex/Prediction.mat'))
-x=[];
-y=[];
-id=[];
-for i=1:20
-    x = [x;Prediction.Score{i}];
-    y= [y;Prediction.realScore{i}];
-    id=[id;Prediction.Origin_ID{i}];
-end
-all_gap= x-y;
-beta=glmfit(y,all_gap);
-yfit=glmval(beta,y,'identity');
-adjusted_all_gap=all_gap-yfit; % corrected age gap
-load ('/HeLabData2/cxpang/DIDA/using_mat/site_remove65.mat')
-load ('/HeLabData2/cxpang/DIDA/using_mat/glmvariable_remove65.mat')
-hc=find(group==1);
-site=site(hc);
-for i=1:length(id)
-    site_hc(i)=site(id(i));
-end
-for i=1:length(id)
-    age_hc(i)=age(id(i));
-end
-adjusted_all_gap_age=cell(8,1);
-ad_gap=[];
-corr_age=[];
-mae_age=[];
-thre=10;
-for i=1:6
-    pos=find(y>=thre&y<thre+10);
-    thre=thre+10;
-    x_tmp=x(pos);
-    y_tmp=y(pos);
-    adjusted_all_gap_age{i}=adjusted_all_gap(pos);
-    ad_gap(i)=mean(abs(adjusted_all_gap(pos)));
-    mae_age(i)=mean(abs(x_tmp-y_tmp));
-end
-site_hc=site_hc';
-adjusted_all_gap_site=cell(10,1);
-ad_gap=[];
-mae_site=[];
-for i=1:10
-    pos=find(site_hc==i);
-    x_tmp=x(pos);
-    y_tmp=y(pos);
-    save(strcat('/home/cxpang/matlab/code/8.brain_age/plot/',num2str(i),'xysex'),'x_tmp','y_tmp')
-    adjusted_all_gap_site{i}=adjusted_all_gap(pos);
-    ad_gap(i)=mean(abs(adjusted_all_gap(pos)));
-    mae_site(i)=mean(abs(x_tmp-y_tmp));
-    mean_age(i)=mean(y(pos));
-    std_age(i)=std(y(pos));
-end
 %% regress age 
 load(strcat(data_dir,'/SVR_all_no_regress_fold20_remove65sex/Prediction.mat'))
 x_all=[];
