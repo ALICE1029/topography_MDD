@@ -6,10 +6,15 @@ sbj_num=2170;
 method='NGSR';
 load ('/HeLabData2/cxpang/DIDA/using_mat/glmvariable_remove65.mat')%age,group,mfd,sex
 load('/home/cxpang/matlab/code/8.brain_age/index_all_remove65sex.mat','Idx')
-addpath(genpath('/home/cxpang/matlab/code/8.brain_age'));
 addpath(genpath('/home/cxpang/matlab/Collaborative_Brain_Decomposition-master/lib/NIfTI_20140122'))
 %%
 load('/home/cxpang/matlab/code/8.brain_age/adjusted_mdd_all_gap_remove65sex.mat','adjusted_mdd_all_gap')
+Idx=zeros(length(adjusted_mdd_all_gap),1);
+pos1=find(adjusted_mdd_all_gap>0);
+Idx(pos1)=2;
+pos2=find(adjusted_mdd_all_gap<0);
+Idx(pos2)=1;
+save('/home/cxpang/matlab/code/8.brain_age/adjusted_mdd_all_gap_remove65sex.mat','adjusted_mdd_all_gap')
 hc=find(group==1);
 mdd=find(group==2);
 sub_gap=zeros(sbj_num,1);
@@ -202,7 +207,6 @@ end
 
 
 dfe=stat_result.tstat.dfe;
-load(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/betweengroup_difference/corr_sub2_2_remove65sex.mat'));
 
 T_value (isnan (T_value))=0;
 p_value (isnan (p_value))=1;
@@ -336,84 +340,5 @@ for i=1:network_num
     %     percentage(2,i)=num(2,i)/(length(pos));
 end
 save(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/betweengroup_difference/cres_sub2_2_remove65sexmask.mat'),'num')
-%% combine sub 1
-load(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/betweengroup_difference/corr_sub2_1_grf_remove65sexmask.mat'),'z_grf')
-t_combine=zeros(voxel_num,1);
-t=zeros(network_num,voxel_num);
-for i = 1:network_num
-    i
-    outDir = strcat ('/HeLabData2/cxpang/DIDA/',method,'/result_xy/corr_sub2_1_remove65sexmask');
-    outName = [outDir,filesep,strcat('corr_',num2str(i),'.nii.gz')];
-    nii = load_untouch_nii(outName);
-    grf=nii.img;
-    maskName ='/HeLabData2/cxpang//fmri/mask/GMMask_3mm.nii';
-    maskNii = load_untouch_nii(maskName);
-    t(i,:)=grf(maskNii.img~=0);
-    
-end
-for i=1:network_num
-    tmp=t(i,:);
-    tmp(find(tmp<0))=0;
-    t_pos(i,:)=tmp;
-    
-    tmp=t(i,:);
-    tmp(find(tmp>0))=0;
-    t_neg(i,:)=tmp;
-end
-
-outDir = strcat ('/HeLabData2/cxpang/DIDA/',method,'/result_xy/corr_sub2_1_remove65sexmask');
-saveFig = 0;
-maskName ='/HeLabData2/cxpang//fmri/mask/GMMask_3mm.nii';
-maskNii = load_untouch_nii(maskName);
-if ~exist(outDir,'dir')
-    mkdir(outDir);
-end
-kNii = maskNii;
-kNii.img(maskNii.img~=0) = mean(t_pos,1);
-outName = [outDir,filesep,strcat('t_combine_pos_grf.nii.gz')];
-save_untouch_nii(kNii,outName);
-
-kNii = maskNii;
-kNii.img(maskNii.img~=0) = mean(t_neg,1);
-outName = [outDir,filesep,strcat('t_combine_neg_grf.nii.gz')];
-save_untouch_nii(kNii,outName);
-%% combine sub 2
-load(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/betweengroup_difference/corr_sub2_2_grf_remove65sexmask.mat'),'t_grf')
-t_combine=zeros(voxel_num,1);
-t=zeros(network_num,voxel_num);
-for i = 1:network_num
-    i
-    outDir = strcat ('/HeLabData2/cxpang/DIDA/',method,'/result_xy/corr_sub2_2_remove65sexmask');
-    outName = [outDir,filesep,strcat('corr_',num2str(i),'.nii.gz')];
-    nii = load_untouch_nii(outName);
-    grf=nii.img;
-    maskName ='/HeLabData2/cxpang//fmri/mask/GMMask_3mm.nii';
-    maskNii = load_untouch_nii(maskName);
-    t(i,:)=grf(maskNii.img~=0);
-end
-for i=1:network_num
-    tmp=t(i,:);
-    tmp(find(tmp<0))=0;
-    t_pos(i,:)=tmp;
-    
-    tmp=t(i,:);
-    tmp(find(tmp>0))=0;
-    t_neg(i,:)=tmp;
-end
-
-outDir = strcat ('/HeLabData2/cxpang/DIDA/',method,'/result_xy/corr_sub2_2_remove65sexmask');
-saveFig = 0;
-maskName ='/HeLabData2/cxpang//fmri/mask/GMMask_3mm.nii';
-maskNii = load_untouch_nii(maskName);
-if ~exist(outDir,'dir')
-    mkdir(outDir);
-end
-kNii = maskNii;
-kNii.img(maskNii.img~=0) = mean(t_pos,1);
-outName = [outDir,filesep,strcat('t_combine_pos_grf.nii.gz')];
-save_untouch_nii(kNii,outName);
-
-kNii = maskNii;
-kNii.img(maskNii.img~=0) = mean(t_neg,1);
 outName = [outDir,filesep,strcat('t_combine_neg_grf.nii.gz')];
 save_untouch_nii(kNii,outName);
