@@ -192,24 +192,6 @@ for i =1:18% 1:network_num
 end
 save(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/betweengroup_difference/corr_hc_1_sta_remove65sexmask.mat'),'coor_x','coor_y','coor_z','my_size','Z','br')
 save(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/betweengroup_difference/corr_hc_1_grf_remove65sexmask.mat'),'z_grf','t_grf')
-%% result
-load(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/betweengroup_difference/corr_sub2_1_grf_remove65sexmask.mat'))
-load(strcat('/HeLabData2/cxpang/DIDA/using_mat/grf_mask_',method,'.mat'))
-num=zeros(2,network_num);
-% percentage=zeros(2,network_num);
-z_map=z_grf;
-pos_sig=cell(network_num,1);
-pos_nosig=cell(network_num,1);
-for i=1:network_num
-    %pos=find(mask(i,:)~=0);
-    pos_pn=find(z_map{i}>0);%positive voxel
-    num(1,i)=length(pos_pn);
-    pos_n=find(z_map{i}<0);
-    num(2,i)=length(pos_n);
-%     percentage(1,i)=  num(1,i)/(length(pos));
-%     percentage(2,i)=num(2,i)/(length(pos));
-end
-load(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/betweengroup_difference/cres_hc_2_remove65sexmask.mat'),'num')
 %% sub2
 [n_voxel,n_sub] = size(loading_sub2{1}');
 T_value = zeros(network_num,n_voxel);
@@ -357,24 +339,6 @@ for i = 1:network_num
 end
 save(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/betweengroup_difference/corr_hc_2_sta_remove65sexmask.mat'),'coor_x','coor_y','coor_z','my_size','Z','br')
 save(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/betweengroup_difference/corr_hc_2_grf_remove65sexmask.mat'),'z_grf','t_grf')
-%% result
-load(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/betweengroup_difference/corr_hc_2_grf_remove65sexmask.mat'))
-%load(strcat('/HeLabData2/cxpang/DIDA/using_mat/grf_mask_',method,'.mat'))
-num=zeros(2,network_num);
-%percentage=zeros(2,network_num);
-z_map=z_grf;
-pos_sig=cell(network_num,1);
-pos_nosig=cell(network_num,1);
-for i=1:network_num
-  %  pos=find(mask(i,:)~=0);
-    pos_pn=find(z_map{i}>0);%positive voxel
-    num(1,i)=length(pos_pn);
-    pos_n=find(z_map{i}<0);
-    num(2,i)=length(pos_n);
-%     percentage(1,i)=  num(1,i)/(length(pos));
-%     percentage(2,i)=num(2,i)/(length(pos));
-end
-save(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/betweengroup_difference/cres_sub2_2_remove65sexmask.mat'),'num')
 %% combine sub 1
 load(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/betweengroup_difference/corr_hc_1_grf_remove65sexmask.mat'),'z_grf')
 t_combine=zeros(voxel_num,1);
