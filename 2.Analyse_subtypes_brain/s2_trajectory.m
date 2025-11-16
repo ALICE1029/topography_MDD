@@ -40,38 +40,46 @@ for i = 1:network_num
     maskNii = load_untouch_nii(maskName);
     t1(i,:)=grf(maskNii.img~=0);
 end
-
 t1=t1';
-all_sub1=find(t1(:)~=0);
+pos_sub1=find(t1(:)>0);
+neg_sub1=find(t1(:)<0);
 % t1: (45892*18)
 load(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/after_combat/variable_combat_remove65.mat'),'x_tmp')
 lo=x_tmp;
+lo_pos=lo(pos_sub1,:);
+lo_neg=lo(neg_sub1,:);
 
-lo_abs=lo(all_sub1,:);
+weight_p_pos=pca(lo_pos');
+weight_pca_pos = lo_pos'* weight_p_pos(:,:);
+weight_pca_pos=weight_pca_pos(:,1);
 
+weight_p_neg=pca(lo_neg');
+weight_pca_neg = lo_neg'* weight_p_neg(:,:);
+weight_pca_neg=weight_pca_neg(:,1);
 
-weight_a_abs=pca(lo_abs');
-%[coeff, score, latent, ~, explained, ~] = pca(lo_pos');
-%explained_variance = latent / sum(latent);
-%cumulative_explained_variance = cumsum(explained_variance);
-weight_pca_abs = lo_abs'* weight_a_abs(:,:);
-weight_pca_abs=weight_pca_abs(:,1);
 %% normalized to 1-2
-if(min(weight_pca_abs)<0)
-    weight_pca_abs=weight_pca_abs+abs(min(weight_pca_abs))+0.1;
+if(min(weight_pca_pos)<0)
+    weight_pca_pos=weight_pca_pos+abs(min(weight_pca_pos))+0.1;
 else
-    weight_pca_abs=weight_pca_abs;
+    weight_pca_pos=weight_pca_pos;
 end
+if(min(weight_pca_neg)<0)
+    weight_pca_neg=weight_pca_neg+abs(min(weight_pca_neg))+0.1;
+else
+    weight_pca_neg=weight_pca_neg;
+end
+hc_weight=weight_pca_pos(hc);
+sub1_weight=weight_pca_pos(sub1_index);
 
-hc_weight=weight_pca_abs(hc);
+prepare_vars_for_norm_models('all','t1psighc',1, hc_weight,hc_sex, hc_age, hc_mfd)
+prepare_vars_for_norm_models('all','t1psigsub1',1, sub1_weight,mdd1_sex, mdd1_age, mdd1_mfd)
 
-sub1_weight=weight_pca_abs(sub1_index);
+hc_weight=weight_pca_neg(hc);
+sub1_weight=weight_pca_neg(sub1_index);
 
-sub2_weight=weight_pca_abs(sub2_index);
+prepare_vars_for_norm_models('all','t1nsighc',1, hc_weight,hc_sex, hc_age, hc_mfd)
+prepare_vars_for_norm_models('all','t1nsigsub1',1, sub1_weight,mdd1_sex, mdd1_age, mdd1_mfd)
 
-prepare_vars_for_norm_models('all','t1asighc',1, hc_weight,hc_sex, hc_age, hc_mfd)
-prepare_vars_for_norm_models('all','t1asigsub1',1, sub1_weight,mdd1_sex, mdd1_age, mdd1_mfd)
-prepare_vars_for_norm_models('all','t1asigsub2',1, sub2_weight,mdd2_sex, mdd2_age, mdd2_mfd)
 %% permut sub1
 for i=1:6
     m1_age_group{i}=find(mdd1_age>=i*10&mdd1_age<i*10+10);
@@ -124,7 +132,7 @@ for i=1:1000
     vars_permut('all','t1asighc',hc_weight_abs,hc_sex, hc_age, hc_mfd,i)
     vars_permut('all','t1asigsub1',sub1_weight_abs,mdd1_sex, mdd1_age, mdd1_mfd,i)
 end
-%%  sub 2
+%% sub 2
 t2=zeros(network_num,voxel_num);
 for i = 1:network_num
     i
@@ -137,30 +145,50 @@ for i = 1:network_num
     t2(i,:)=grf(maskNii.img~=0);
 end
 t2=t2';
-all_sub2=find(t2(:)~=0);
+
+pos_sub2=find(t2(:)>0);
+neg_sub2=find(t2(:)<0);
 
 lo=x_tmp;
-lo_abs=lo(all_sub2,:);
+lo_pos=lo(pos_sub2,:);
+lo_neg=lo(neg_sub2,:);
 
-weight_p_abs2=pca(lo_abs');
-weight_pca_abs2 = lo_abs'* weight_p_abs2(:,:);
-weight_pca_abs2 = weight_pca_abs2(:,1);
+weight_p_pos2=pca(lo_pos');
+[coeff, score, latent, ~, explained, ~] = pca(lo_pos');
+explained_variance = latent / sum(latent);
+cumulative_explained_variance = cumsum(explained_variance);
+weight_pca_pos2 = lo_pos'* weight_p_pos2(:,:);
+weight_pca_pos2=weight_pca_pos2(:,1);
+
+weight_p_neg2=pca(lo_neg');
+[coeff, score, latent, ~, explained, ~] = pca(lo_neg');
+explained_variance = latent / sum(latent);
+cumulative_explained_variance = cumsum(explained_variance);
+weight_pca_neg2 = lo_neg'* weight_p_neg2(:,:);
+weight_pca_neg2=weight_pca_neg2(:,1);
+
 %% normalized to 1-2
-if(min(weight_pca_abs2)<0)
-    weight_pca_abs2=weight_pca_abs2+abs(min(weight_pca_abs2))+0.1;
+if(min(weight_pca_pos2)<0)
+    weight_pca_pos2=weight_pca_pos2+abs(min(weight_pca_pos2))+0.1;
 else
-    weight_pca_abs2=weight_pca_abs2;
+    weight_pca_pos2=weight_pca_pos2;
+end
+if(min(weight_pca_neg2)<0)
+    weight_pca_neg2=weight_pca_pos2+abs(min(weight_pca_neg2))+0.1;
+else
+    weight_pca_neg2=weight_pca_neg2;
 end
 
-hc_weight=weight_pca_abs2(hc);
+hc_weight=weight_pca_pos2(hc);
+sub2_weight=weight_pca_pos2(sub2_index);
+prepare_vars_for_norm_models('all','t2psighc',1, hc_weight,hc_sex, hc_age, hc_mfd)
+prepare_vars_for_norm_models('all','t2psigsub2',1, sub2_weight,mdd2_sex, mdd2_age, mdd2_mfd)
 
-sub1_weight=weight_pca_abs2(sub1_index);
+hc_weight=weight_pca_neg2(hc);
+sub2_weight=weight_pca_neg2(sub2_index);
+prepare_vars_for_norm_models('all','t2nsighc',1, hc_weight,hc_sex, hc_age, hc_mfd)
+prepare_vars_for_norm_models('all','t2nsigsub2',1, sub2_weight,mdd2_sex, mdd2_age, mdd2_mfd)
 
-sub2_weight=weight_pca_abs2(sub2_index);
-
-prepare_vars_for_norm_models('all','t2asighc',1, hc_weight,hc_sex, hc_age, hc_mfd)
-prepare_vars_for_norm_models('all','t2asigsub1',1, sub1_weight,mdd1_sex, mdd1_age, mdd1_mfd)
-prepare_vars_for_norm_models('all','t2asigsub2',1, sub2_weight,mdd2_sex, mdd2_age, mdd2_mfd)
 %% permut sub2
 hc_index_permut_all=[];
 sub2_index_permut_all=[];
@@ -297,7 +325,7 @@ for i=1:1000
 end
 %%
 % s2_gamlss_test.R
-%% bootstrapyfitF=nan(1000,5);
+%% 
 clear all
 close all
 
