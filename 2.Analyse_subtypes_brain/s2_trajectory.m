@@ -127,11 +127,19 @@ for i=1:1000
     mdd1_age=age(sub1_index_permut_all(i,:));
     mdd1_mfd=mfd(sub1_index_permut_all(i,:));
     
-    hc_weight_abs=weight_pca_abs(hc_index_permut_all(i,:));
-    sub1_weight_abs=weight_pca_abs(sub1_index_permut_all(i,:));
-    vars_permut('all','t1asighc',hc_weight_abs,hc_sex, hc_age, hc_mfd,i)
-    vars_permut('all','t1asigsub1',sub1_weight_abs,mdd1_sex, mdd1_age, mdd1_mfd,i)
+    hc_weight_pos=weight_pca_pos(hc_index_permut_all(i,:));
+    sub1_weight_pos=weight_pca_pos(sub1_index_permut_all(i,:));
+   
+    vars_permut('all','t1psighc',hc_weight_pos,hc_sex, hc_age, hc_mfd,i)
+    vars_permut('all','t1psigsub1',sub1_weight_pos,mdd1_sex, mdd1_age, mdd1_mfd,i)
+
+    hc_weight_neg=weight_pca_neg(hc_index_permut_all(i,:));
+    sub1_weight_neg=weight_pca_neg(sub1_index_permut_all(i,:));
+    vars_permut('all','t1nsighc',hc_weight_neg,hc_sex, hc_age, hc_mfd,i)
+    vars_permut('all','t1nsigsub1',sub1_weight_neg,mdd1_sex, mdd1_age, mdd1_mfd,i)
 end
+
+
 %% sub 2
 t2=zeros(network_num,voxel_num);
 for i = 1:network_num
@@ -154,16 +162,10 @@ lo_pos=lo(pos_sub2,:);
 lo_neg=lo(neg_sub2,:);
 
 weight_p_pos2=pca(lo_pos');
-[coeff, score, latent, ~, explained, ~] = pca(lo_pos');
-explained_variance = latent / sum(latent);
-cumulative_explained_variance = cumsum(explained_variance);
 weight_pca_pos2 = lo_pos'* weight_p_pos2(:,:);
 weight_pca_pos2=weight_pca_pos2(:,1);
 
 weight_p_neg2=pca(lo_neg');
-[coeff, score, latent, ~, explained, ~] = pca(lo_neg');
-explained_variance = latent / sum(latent);
-cumulative_explained_variance = cumsum(explained_variance);
 weight_pca_neg2 = lo_neg'* weight_p_neg2(:,:);
 weight_pca_neg2=weight_pca_neg2(:,1);
 
@@ -174,7 +176,7 @@ else
     weight_pca_pos2=weight_pca_pos2;
 end
 if(min(weight_pca_neg2)<0)
-    weight_pca_neg2=weight_pca_pos2+abs(min(weight_pca_neg2))+0.1;
+    weight_pca_neg2=weight_pca_neg2+abs(min(weight_pca_neg2))+0.1;
 else
     weight_pca_neg2=weight_pca_neg2;
 end
@@ -205,14 +207,11 @@ for j=1:1000
     hc_index_permut=[];
     sub2_index_permut=[];
     for i=1:6
-        hc_1=intersect(hc_age_group{i},hc_sex_group{1});
-        
-        hc_2=intersect(hc_age_group{i},hc_sex_group{2});
-        
-        m2_1=intersect(m2_age_group{i},m2_sex_group{1});
-        
+        hc_1=intersect(hc_age_group{i},hc_sex_group{1});        
+        hc_2=intersect(hc_age_group{i},hc_sex_group{2});  
+        m2_1=intersect(m2_age_group{i},m2_sex_group{1});     
         m2_2=intersect(m2_age_group{i},m2_sex_group{2});
-        tmp_hc=hc( hc_1);
+        tmp_hc=hc(hc_1);
         tmp_1=sub2_index( m2_1);
         tmp  =[tmp_hc;tmp_1];
         randd=datasample(tmp, length(hc_1),'Replace',false);
@@ -228,8 +227,7 @@ for j=1:1000
         
     end
     hc_index_permut_all(j,:)=hc_index_permut;
-    sub2_index_permut_all(j,:)=sub2_index_permut;
-    
+    sub2_index_permut_all(j,:)=sub2_index_permut;    
 end
 for i=1:1000
     %
@@ -241,88 +239,17 @@ for i=1:1000
     mdd2_age=age(sub2_index_permut_all(i,:));
     mdd2_mfd=mfd(sub2_index_permut_all(i,:));
     
-    hc_weight_abs=weight_pca_abs2(hc_index_permut_all(i,:));
-    sub2_weight_abs=weight_pca_abs2(sub2_index_permut_all(i,:));
-    
-    vars_permut('all','t2asighc',hc_weight_abs,hc_sex, hc_age, hc_mfd,i)
-    vars_permut('all','t2asigsub2',sub2_weight_abs,mdd2_sex, mdd2_age, mdd2_mfd,i)
-end
-%% bootstrap
-for i=1:6
-    m1_age_group{i}=find(mdd1_age>=i*10&mdd1_age<i*10+10);
-    m2_age_group{i}=find(mdd2_age>=i*10&mdd2_age<i*10+10);
-    hc_age_group{i}=find(hc_age>=i*10&hc_age<i*10+10);
-end
-m1_sex_group{1}=find(mdd1_sex==1);
-m1_sex_group{2}=find(mdd1_sex==0);
-m2_sex_group{1}=find(mdd2_sex==1);
-m2_sex_group{2}=find(mdd2_sex==0);
-hc_sex_group{1}=find(hc_sex==1);
-hc_sex_group{2}=find(hc_sex==0);
+    hc_weight_pos=weight_pca_pos2(hc_index_permut_all(i,:));
+    sub2_weight_pos=weight_pca_pos2(sub2_index_permut_all(i,:));  
+    vars_permut('all','t2psighc',hc_weight_pos,hc_sex, hc_age, hc_mfd,i)
+    vars_permut('all','t2psigsub2',sub2_weight_pos,mdd2_sex, mdd2_age, mdd2_mfd,i)
 
-for j=1:1000
-    j
-    hc_index_boot=[];
-    sub1_index_boot=[];
-    sub2_index_boot=[];
-    for i=1:6
-        hc_1=intersect(hc_age_group{i},hc_sex_group{1});
-        selectedIndices = randi(length(hc( hc_1)), length(hc( hc_1)),1);%存在重复值
-        tmp=hc( hc_1);
-        hc_index_boot=[hc_index_boot;tmp(selectedIndices)];
-        hc_2=intersect(hc_age_group{i},hc_sex_group{2});
-        selectedIndices = randi(length(hc( hc_2)), length(hc( hc_2)),1);
-        tmp=hc( hc_2);
-        hc_index_boot=[hc_index_boot;tmp(selectedIndices)];
-        
-        m1_1=intersect(m1_age_group{i},m1_sex_group{1});
-        selectedIndices = randi(length(sub1_index( m1_1)), length(sub1_index( m1_1)),1);
-        tmp=sub1_index( m1_1);
-        sub1_index_boot=[sub1_index_boot;tmp(selectedIndices)];
-        m1_2=intersect(m1_age_group{i},m1_sex_group{2});
-        selectedIndices = randi(length(sub1_index( m1_2)), length(sub1_index( m1_2)),1);
-        tmp=sub1_index( m1_2);
-        sub1_index_boot=[sub1_index_boot;tmp(selectedIndices)];
-        
-        m2_1=intersect(m2_age_group{i},m2_sex_group{1});
-        selectedIndices = randi(length(sub2_index( m2_1)), length(sub2_index( m2_1)),1);
-        tmp=sub2_index( m2_1);
-        sub2_index_boot=[sub2_index_boot;tmp(selectedIndices)];
-        m2_2=intersect(m2_age_group{i},m2_sex_group{2});
-        selectedIndices = randi(length(sub2_index( m2_2)), length(sub2_index( m2_2)),1);
-        tmp=sub2_index( m2_2);
-        sub2_index_boot=[sub2_index_boot;tmp(selectedIndices)];
-    end
-    hc_index_boot_all(j,:)=hc_index_boot;
-    sub1_index_boot_all(j,:)=sub1_index_boot;
-    sub2_index_boot_all(j,:)=sub2_index_boot;
+    hc_weight_neg=weight_pca_neg2(hc_index_permut_all(i,:));
+    sub2_weight_neg=weight_pca_neg2(sub2_index_permut_all(i,:));
+    vars_permut('all','t2nsighc',hc_weight_neg,hc_sex, hc_age, hc_mfd,i)
+    vars_permut('all','t2nsigsub2',sub2_weight_neg,mdd2_sex, mdd2_age, mdd2_mfd,i)
 end
-for i=1:1000
-    i
-    
-    hc_sex=sex(hc_index_boot_all(i,:));
-    hc_age=age(hc_index_boot_all(i,:));
-    hc_mfd=mfd(hc_index_boot_all(i,:));
-    mdd1_sex=sex(sub1_index_boot_all(i,:));
-    mdd1_age=age(sub1_index_boot_all(i,:));
-    mdd1_mfd=mfd(sub1_index_boot_all(i,:));
-    mdd2_sex=sex(sub2_index_boot_all(i,:));
-    mdd2_age=age(sub2_index_boot_all(i,:));
-    mdd2_mfd=mfd(sub2_index_boot_all(i,:));
-    
-    hc_weight=weight_pca_abs(hc_index_boot_all(i,:));
-    sub1_weight=weight_pca_abs(sub1_index_boot_all(i,:))
-    
-    vars_boot('all','t1asighc', hc_weight,hc_sex, hc_age, hc_mfd,i)
-    vars_boot('all','t1asigsub1', sub1_weight,mdd1_sex, mdd1_age, mdd1_mfd,i)
-    
-    
-    hc_weight=weight_pca_abs2(hc_index_boot_all(i,:));
-    sub2_weight=weight_pca_abs2(sub2_index_boot_all(i,:));
-    
-    vars_boot('all','t2asighc', hc_weight,hc_sex, hc_age, hc_mfd,i)
-    vars_boot('all','t2asigsub2', sub2_weight,mdd2_sex, mdd2_age, mdd2_mfd,i)
-end
+
 %%
 % s2_gamlss_test.R
 %% 
@@ -400,7 +327,7 @@ fam_age=age;
 yfit=(yfitF+yfitM)/2;
 fake_age=(faf_age+fam_age)/2;
 
-figure; % Ensure it's a new figure
+figure; 
 set(gcf, 'Position', [100, 100, 800, 400]);
 %gap<0
 load([inpath2,...
