@@ -250,401 +250,16 @@ for i=1:1000
     vars_permut('all','t2nsigsub2',sub2_weight_neg,mdd2_sex, mdd2_age, mdd2_mfd,i)
 end
 
-%%
-% s2_gamlss_test.R
-%% 
-clear all
-close all
-
-inpath1=('D:\study\sub2\brain_age\variables_for_normative_modeling\all\');
-inpath2=('D:\study\sub2\brain_age\variables_for_normative_modeling\output_normative_modeling\all\');
-inpath3=('D:\study\sub2\brain_age\variables_for_normative_modeling\output_normative_modeling\boot_abs\');
-for i=1:1000
-    i
-    yfitF=nan(1000,5);
-    yfitM=nan(1000,5);
-    load([inpath3,...
-        'GAMLSS_','t1asighc_',num2str(i),'_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-    yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
-    faf_age=age;
-    load([inpath3,...
-        'GAMLSS_','t1asighc_',num2str(i),'_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-    yfitM=predictions_quantiles; %estimated males at site i (assumes males = 1)
-    fam_age=age;
-    yfit=(yfitF+yfitM)/2;
-    fake_age_boot(:,i)=(faf_age+fam_age)/2;
-    fit_boot(:,i)=yfit(:,3);
-    % sub 1
-    yfitF=nan(1000,5);
-    yfitM=nan(1000,5);
-    load([inpath3,...
-        'GAMLSS_','t1asigsub1_',num2str(i),'_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-    yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
-    faf_age=age;
-    load([inpath3,...
-        'GAMLSS_','t1asigsub1_',num2str(i),'_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-    yfitM=predictions_quantiles; %estimated males at site i (assumes males = 1)
-    fam_age=age;
-    yfit=(yfitF+yfitM)/2;
-    fake_age_sub1_boot(:,i)=(faf_age+fam_age)/2;
-    fit_sub1_boot(:,i)=yfit(:,3);
-end
-% 95%ci
-for i=1:1000
-    mean_normal = mean(fit_boot(i,:));
-    std_normal = std(fit_boot(i,:));
-    
-    confidence_level = 0.95; % 95%
-    
-    df = (length(fit_boot(i,:))-1);
-    critical_value = tinv((1 + confidence_level) / 2, df);
-    
-    ci_normal_hc(i,:) = [mean_normal+ - critical_value * std_normal , ...
-        mean_normal + critical_value * std_normal];
-    
-    
-    mean_normal = mean(fit_sub1_boot(i,:));
-    std_normal = std(fit_sub1_boot(i,:));
-    
-    confidence_level = 0.95; % 95%
-    
-    df = (length(fit_sub1_boot(i,:))-1);
-    critical_value = tinv((1 + confidence_level) / 2, df);
-    
-    ci_normal_sub1(i,:) = [mean_normal+ - critical_value * std_normal , ...
-        mean_normal + critical_value * std_normal];
-end
-
-yfitM=nan(1000,5);
-load([inpath2,...
-    'GAMLSS_','t1asighc_1_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
-faf_age=age;
-load([inpath2,...
-    'GAMLSS_','t1asighc_1_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-yfitM=predictions_quantiles; %estimated males at site i (assumes males = 1)
-fam_age=age;
-yfit=(yfitF+yfitM)/2;
-fake_age=(faf_age+fam_age)/2;
-
-figure; 
-set(gcf, 'Position', [100, 100, 800, 400]);
-%gap<0
-load([inpath2,...
-    'GAMLSS_','t1asigsub1_1_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
-faf_age=age;
-load([inpath2,...
-    'GAMLSS_','t1asigsub1_1_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-yfitM=predictions_quantiles; %estimated males at site i (assumes males = 1)
-fam_age=age;
-yfit_neg=(yfitF+yfitM)/2;
-fake_age_neg=(faf_age+fam_age)/2;
-%
-x = [fake_age', fliplr(fake_age')];
-y1=ci_normal_hc(:,1);
-y2=ci_normal_hc(:,2);
-y = [(y1)', fliplr(y2')];
-fill(x, y, [0.6 0.6 0.6],'EdgeColor', 'none','facealpha',0.5);
-hold on
-plot(fake_age,(yfit(:,3)),'k','linewidth',2.5); %plot 50th centile
-
-hold on
-x = [fake_age', fliplr(fake_age')];
-y = [ci_normal_sub1(:,1)', fliplr(ci_normal_sub1(:,2)')];
-fill(x, y, [0.7, 0.7, 1], 'EdgeColor', 'none','facealpha',0.5);
-hold on
-
-box off
-set(gca, 'FontSize', 14);
-
-%% sub 2
-clear all
-close all
-
-inpath1=('D:\study\sub2\brain_age\variables_for_normative_modeling\all\');
-inpath2=('D:\study\sub2\brain_age\variables_for_normative_modeling\output_normative_modeling\all\');
-inpath3=('D:\study\sub2\brain_age\variables_for_normative_modeling\output_normative_modeling\boot_abs\');
-for i=1:1000%i boot times
-    
-    yfitF=nan(1000,5);
-    yfitM=nan(1000,5);
-    load([inpath3,...
-        'GAMLSS_','t2asighc_',num2str(i),'_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-    yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
-    faf_age=age;
-    load([inpath3,...
-        'GAMLSS_','t2asighc_',num2str(i),'_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-    yfitM=predictions_quantiles; %estimated males at site i (assumes males = 1)
-    fam_age=age;
-    yfit=(yfitF+yfitM)/2;
-    fake_age_boot(:,i)=(faf_age+fam_age)/2;
-    fit_boot(:,i)=yfit(:,3);
-    % sub 1
-    yfitF=nan(1000,5);
-    yfitM=nan(1000,5);
-    load([inpath3,...
-        'GAMLSS_','t2asigsub2_',num2str(i),'_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-    yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
-    faf_age=age;
-    load([inpath3,...
-        'GAMLSS_','t2asigsub2_',num2str(i),'_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-    yfitM=predictions_quantiles; %estimated males at site i (assumes males = 1)
-    fam_age=age;
-    yfit=(yfitF+yfitM)/2;
-    fake_age_sub1_boot(:,i)=(faf_age+fam_age)/2;
-    fit_sub1_boot(:,i)=yfit(:,3);
-end
-% 95%ci
-for i=1:1000
-    mean_normal = mean(fit_boot(i,:));
-    std_normal = std(fit_boot(i,:));
-    
-    confidence_level = 0.95; % 95%
-    
-    df = (length(fit_boot(i,:))-1);
-    critical_value = tinv((1 + confidence_level) / 2, df);
-    
-    ci_normal_hc(i,:) = [mean_normal+ - critical_value * std_normal , ...
-        mean_normal + critical_value * std_normal];
-    
-    
-    mean_normal = mean(fit_sub1_boot(i,:));
-    std_normal = std(fit_sub1_boot(i,:));
-    
-    confidence_level = 0.95; % 95%
-    
-    df = (length(fit_sub1_boot(i,:))-1);
-    critical_value = tinv((1 + confidence_level) / 2, df);
-    
-    ci_normal_sub1(i,:) = [mean_normal+ - critical_value * std_normal , ...
-        mean_normal + critical_value * std_normal];
-end
-
-yfitM=nan(1000,5);
-load([inpath2,...
-    'GAMLSS_','t2asighc_1_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
-faf_age=age;
-load([inpath2,...
-    'GAMLSS_','t2asighc_1_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-yfitM=predictions_quantiles; %estimated males at site i (assumes males = 1)
-fam_age=age;
-yfit=(yfitF+yfitM)/2;
-fake_age=(faf_age+fam_age)/2;
-
-% plot(fake_age,(yfit(:,3)),'k','linewidth',2.5); %plot 50th centile
-% hold on
-%gap<0
-load([inpath2,...
-    'GAMLSS_','t2asigsub2_1_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
-faf_age=age;
-load([inpath2,...
-    'GAMLSS_','t2asigsub2_1_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-yfitM=predictions_quantiles; %estimated males at site i (assumes males = 1)
-fam_age=age;
-yfit_neg=(yfitF+yfitM)/2;
-fake_age_neg=(faf_age+fam_age)/2;
-%
-figure; % Ensure it's a new figure
-set(gcf, 'Position', [100, 100, 800, 400]);
-x = [fake_age', fliplr(fake_age')];
-y = [ci_normal_sub1(:,1)', fliplr(ci_normal_sub1(:,2)')];
-fill(x, y, [1, 0.7, 0.7], 'EdgeColor', 'none','facealpha',0.5); % 灰色阴影
-hold on
-x = [fake_age', fliplr(fake_age')];
-y1=ci_normal_hc(:,1);
-y2=ci_normal_hc(:,2);
-y = [(y1)', fliplr(y2')];%y的转置在里面，之前犯了先flip再转置的错误
-fill(x, y, [0.5 0.5 0.5],'EdgeColor', 'none','facealpha',0.5);
-hold on
-plot(fake_age,(yfit(:,3)),'k','linewidth',2.5); %plot 50th centile
-plot(fake_age_neg,(yfit_neg(:,3)),'r','linewidth',2.5); %plot 50th centile
-hold on
-% plot(fake_age,ci_normal_sub1(:,1),'b--','linewidth',1.5); %plot 50th centile
-% hold on
-% plot(fake_age,ci_normal_sub1(:,2),'b--','linewidth',1.5); %plot 50th centile
-
-box off
-set(gca, 'FontSize', 14);
-
-%% sex
-inpath3=('D:\study\sub2\brain_age\variables_for_normative_modeling\output_normative_modeling\boot_abs\');
-for i=1:1000
-    i
-    yfitF=nan(1000,5);
-    load([inpath3,...
-        'GAMLSS_','t1asighc_',num2str(i),'_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-    yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
-    faf_age=age;
-    yfit=yfitF;
-    fake_age_boot(:,i)=faf_age;
-    fit_boot(:,i)=yfit(:,3);
-    % sub 1
-    yfitF=nan(1000,5);
-    load([inpath3,...
-        'GAMLSS_','t1asigsub1_',num2str(i),'_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-    yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
-    faf_age=age;
-    yfit=(yfitF);
-    fake_age_sub1_boot(:,i)=(faf_age);
-    fit_sub1_boot(:,i)=yfit(:,3);
-end
-% 95%ci
-for i=1:1000
-    mean_normal = mean(fit_boot(i,:));
-    std_normal = std(fit_boot(i,:));
-    confidence_level = 0.95; % 95%
-    df = (length(fit_boot(i,:))-1);
-    critical_value = tinv((1 + confidence_level) / 2, df);
-    
-    ci_normal_hc(i,:) = [mean_normal+ - critical_value * std_normal , ...
-        mean_normal + critical_value * std_normal];
-    
-    
-    mean_normal = mean(fit_sub1_boot(i,:));
-    std_normal = std(fit_sub1_boot(i,:));
-    
-    confidence_level = 0.95; % 95%
-    
-    df = (length(fit_sub1_boot(i,:))-1);
-    critical_value = tinv((1 + confidence_level) / 2, df);
-    
-    ci_normal_sub1(i,:) = [mean_normal+ - critical_value * std_normal , ...
-        mean_normal + critical_value * std_normal];
-end
-
-
-load([inpath2,...
-    'GAMLSS_','t1asighc_1_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
-faf_age=age;
-yfit=(yfitF);
-fake_age=(faf_age);
-plot(fake_age,(yfit(:,3)),'k','linewidth',2.5); %plot 50th centile
-hold on
-%gap<0
-load([inpath2,...
-    'GAMLSS_','t1asigsub1_1_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
-faf_age=age;
-
-yfit_neg=(yfitF);
-fake_age_neg=(faf_age);
-
-x = [fake_age', fliplr(fake_age')];
-y1=ci_normal_hc(:,1);
-y2=ci_normal_hc(:,2);
-y = [(y1)', fliplr(y2')];
-fill(x, y, [0.6 0.6 0.6],'EdgeColor', 'none','facealpha',0.5);
-hold on
-plot(fake_age,(yfit(:,3)),'k','linewidth',2.5); %plot 50th centile
-hold on
-
-x = [fake_age', fliplr(fake_age')];
-y = [ci_normal_sub1(:,1)', fliplr(ci_normal_sub1(:,2)')];
-fill(x, y, [0.7, 0.7, 1], 'EdgeColor', 'none','facealpha',0.5);
-hold on
-plot(fake_age_neg,(yfit_neg(:,3)),'b','linewidth',2.5); %plot 50th centile
-box off
-set(gca, 'FontSize', 14);
-
-%% sub 2
-for i=1:1000
-    yfitF=nan(1000,5);
-    load([inpath3,...
-        'GAMLSS_','t2asighc_',num2str(i),'_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-    yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
-    faf_age=age;
-    yfit=(yfitF);
-    fake_age_boot(:,i)=(faf_age);
-    fit_boot(:,i)=yfit(:,3);
-    % sub 1
-    yfitF=nan(1000,5);
-    load([inpath3,...
-        'GAMLSS_','t2asigsub2_',num2str(i),'_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-    yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
-    faf_age=age;
-    yfit=(yfitF);
-    fake_age_sub1_boot(:,i)=(faf_age);
-    fit_sub1_boot(:,i)=yfit(:,3);
-end
-% 95%ci
-for i=1:1000
-    mean_normal = mean(fit_boot(i,:));
-    std_normal = std(fit_boot(i,:));
-    
-    confidence_level = 0.95; % 95%
-    
-    df = (length(fit_boot(i,:))-1);
-    critical_value = tinv((1 + confidence_level) / 2, df);
-    
-    ci_normal_hc(i,:) = [mean_normal+ - critical_value * std_normal , ...
-        mean_normal + critical_value * std_normal];
-    
-    
-    mean_normal = mean(fit_sub1_boot(i,:));
-    std_normal = std(fit_sub1_boot(i,:));
-    
-    confidence_level = 0.95; % 95%
-    
-    df = (length(fit_sub1_boot(i,:))-1);
-    critical_value = tinv((1 + confidence_level) / 2, df);
-    
-    ci_normal_sub1(i,:) = [mean_normal+ - critical_value * std_normal , ...
-        mean_normal + critical_value * std_normal];
-end
-
-yfitM=nan(1000,5);
-load([inpath2,...
-    'GAMLSS_','t2asighc_1_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
-faf_age=age;
-
-yfit=yfitF;
-fake_age=(faf_age);
-
-% plot(fake_age,(yfit(:,3)),'k','linewidth',2.5); %plot 50th centile
-% hold on
-%gap<0
-load([inpath2,...
-    'GAMLSS_','t2asigsub2_1_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
-faf_age=age;
-
-yfit_neg=(yfitF);
-fake_age_neg=(faf_age);
-%
-x = [fake_age', fliplr(fake_age')];
-y = [ci_normal_sub1(:,1)', fliplr(ci_normal_sub1(:,2)')];
-fill(x, y, [1, 0.7, 0.7], 'EdgeColor', 'none','facealpha',0.5); % 灰色阴影
-hold on
-x = [fake_age', fliplr(fake_age')];
-y1=ci_normal_hc(:,1);
-y2=ci_normal_hc(:,2);
-y = [(y1)', fliplr(y2')];%y的转置在里面，之前犯了先flip再转置的错误
-fill(x, y, [0.5 0.5 0.5],'EdgeColor', 'none','facealpha',0.5);
-hold on
-plot(fake_age,(yfit(:,3)),'k','linewidth',2.5); %plot 50th centile
-plot(fake_age_neg,(yfit_neg(:,3)),'r','linewidth',2.5); %plot 50th centile
-hold on
-% plot(fake_age,ci_normal_sub1(:,1),'b--','linewidth',1.5); %plot 50th centile
-% hold on
-% plot(fake_age,ci_normal_sub1(:,2),'b--','linewidth',1.5); %plot 50th centile
-box off
-set(gca, 'FontSize', 14);
-%% permut
+%% s2_gamlss_test.R
+%% permut significance
 % sub 1
 clear all
 close all
 inpath1=('D:\study\sub2\brain_age\variables_for_normative_modeling\all\');
 inpath2=('D:\study\sub2\brain_age\variables_for_normative_modeling\output_normative_modeling\all\');
-inpath3=('D:\study\sub2\brain_age\variables_for_normative_modeling\output_normative_modeling\permut_abs_new\');
+inpath3=('D:\study\sub2\brain_age\variables_for_normative_modeling\output_normative_modeling\permut\');
 for i=1:1000
     i
-    yfitF=nan(1000,5);
-    yfitM=nan(1000,5);
     load([inpath3,...
         'GAMLSS_','t1psighc_',num2str(i),'_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
     yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
@@ -654,11 +269,18 @@ for i=1:1000
     yfitM=predictions_quantiles; %estimated males at site i (assumes males = 1)
     fam_age=age;
     yfit=(yfitF+yfitM)/2;
-    fake_age_permut(:,i)=(faf_age+fam_age)/2;
     fit_permut(:,i)=yfit(:,3);
+    load([inpath3,...
+        'GAMLSS_','t1nsighc_',num2str(i),'_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
+    yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
+    faf_age=age;
+    load([inpath3,...
+        'GAMLSS_','t1nsighc_',num2str(i),'_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
+    yfitM=predictions_quantiles; %estimated males at site i (assumes males = 1)
+    fam_age=age;
+    yfit=(yfitF+yfitM)/2;
+    fit_permutn(:,i)=yfit(:,3);
     % sub 1
-    yfitF=nan(1000,5);
-    yfitM=nan(1000,5);
     load([inpath3,...
         'GAMLSS_','t1psigsub1_',num2str(i),'_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
     yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
@@ -669,9 +291,18 @@ for i=1:1000
     fam_age=age;
     yfit=(yfitF+yfitM)/2;
     fit_sub1_permut(:,i)=yfit(:,3);
+    load([inpath3,...
+        'GAMLSS_','t1nsigsub1_',num2str(i),'_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
+    yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
+    faf_age=age;
+    load([inpath3,...
+        'GAMLSS_','t1nsigsub1_',num2str(i),'_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
+    yfitM=predictions_quantiles; %estimated males at site i (assumes males = 1)
+    fam_age=age;
+    yfit=(yfitF+yfitM)/2;
+    fit_sub1_permutn(:,i)=yfit(:,3);
 end
-
-yfitM=nan(1000,5);
+% real
 load([inpath2,...
     'GAMLSS_','t1psighc_1_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
 yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
@@ -682,105 +313,164 @@ yfitM=predictions_quantiles; %estimated males at site i (assumes males = 1)
 fam_age=age;
 yfit=(yfitF+yfitM)/2;
 real_hc=yfit(:,3);
+load([inpath2,...
+    'GAMLSS_','t1nsighc_1_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
+yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
+faf_age=age;
+load([inpath2,...
+    'GAMLSS_','t1nsighc_1_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
+yfitM=predictions_quantiles; %estimated males at site i (assumes males = 1)
+fam_age=age;
+yfit=(yfitF+yfitM)/2;
+real_hcn=yfit(:,3);
 
-%gap<0
+load([inpath2,...
+    'GAMLSS_','t1psighc_1_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
+yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
+load([inpath2,...
+    'GAMLSS_','t1psighc_1_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
+yfitM=predictions_quantiles; %estimated males at site i (assumes males = 1)
+yfit=(yfitF+yfitM)/2;
+real_sub1_pos=yfit(:,3);
+load([inpath2,...
+    'GAMLSS_','t1nsighc_1_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
+yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
+load([inpath2,...
+    'GAMLSS_','t1nsighc_1_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
+yfitM=predictions_quantiles; %estimated males at site i (assumes males = 1)
+yfit=(yfitF+yfitM)/2;
+real_sub1n=yfit(:,3);
+
+real_diff_pos_sub1=(real_sub1_pos-real_hc);
+permut_diff_pos=[];
+for i=1:1000
+    permut_diff_pos(i,:)=(fit_sub1_permut(:,i)-fit_permut(:,i)); 
+end
+for i=10:65
+    pos=find(age>=i&age<i+1);
+    real_sub1_pos1=mean(real_diff_pos_sub1(pos))
+    permut_diff_pos1=mean(permut_diff_pos(:,pos),2); 
+    sig_sub1_pos(i-9)=length(find( real_sub1_pos1< permut_diff_pos1))/1000;
+end
+find(sig_sub1_pos<0.05)
+q=mafdr(sig_sub1_pos,'BHFDR', true);
+
+real_diff_neg_sub1=(real_sub1n-real_hcn);
+permut_diff_neg=[];
+for i=1:1000
+    permut_diff_neg(i,:)=(fit_sub1_permutn(:,i)-fit_permutn(:,i)); 
+end
+for i=11:64
+    pos=find(age>=i&age<i+1);
+    real_sub1_neg1=mean(real_diff_neg_sub1(pos))
+    permut_diff_neg1=mean(permut_diff_neg(:,pos),2); 
+    sig_sub1_neg(i-10)=length(find( real_sub1_neg1< permut_diff_neg1))/1000;
+end
+find(sig_sub1_neg<0.05)
+q=mafdr(sig_sub1_neg,'BHFDR', true);
+
+%% draw figure
+clear all
+close all
+
+inpath1=('D:\study\sub2\brain_age\variables_for_normative_modeling\all\');
+inpath2=('D:\study\sub2\brain_age\variables_for_normative_modeling\output_normative_modeling\all\');
+inpath3=('D:\study\sub2\brain_age\variables_for_normative_modeling\output_normative_modeling\boot\');
+for i=1:1000
+    i
+    yfitF=nan(1000,5);
+    yfitM=nan(1000,5);
+    load([inpath3,...
+        'GAMLSS_','t1maskphc_',num2str(i),'_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
+    yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
+    faf_age=age;
+    load([inpath3,...
+        'GAMLSS_','t1maskphc_',num2str(i),'_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
+    yfitM=predictions_quantiles; %estimated males at site i (assumes males = 1)
+    fam_age=age;
+    yfit=(yfitF+yfitM)/2;
+    fake_age_boot(:,i)=(faf_age+fam_age)/2;
+    fit_boot(:,i)=yfit(:,3);
+    % sub 1
+    yfitF=nan(1000,5);
+    yfitM=nan(1000,5);
+    load([inpath3,...
+        'GAMLSS_','t1maskpsub1_',num2str(i),'_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
+    yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
+    faf_age=age;
+    load([inpath3,...
+        'GAMLSS_','t1maskpsub1_',num2str(i),'_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
+    yfitM=predictions_quantiles; %estimated males at site i (assumes males = 1)
+    fam_age=age;
+    yfit=(yfitF+yfitM)/2;
+    fake_age_sub1_boot(:,i)=(faf_age+fam_age)/2;
+    fit_sub1_boot(:,i)=yfit(:,3);
+end
+
+% 95%ci
+for i=1:1000
+    mean_normal = mean(fit_boot(i,:));
+    std_normal = std(fit_boot(i,:));
+    
+    confidence_level = 0.95; % 95%
+    
+    df = (length(fit_boot(i,:))-1);
+    critical_value = tinv((1 + confidence_level) / 2, df);
+    
+    ci_normal_hc(i,:) = [mean_normal+ - critical_value * std_normal , ...
+        mean_normal + critical_value * std_normal];
+    
+    
+    mean_normal = mean(fit_sub1_boot(i,:));
+    std_normal = std(fit_sub1_boot(i,:));
+    
+    confidence_level = 0.95; % 95%
+    
+    df = (length(fit_sub1_boot(i,:))-1);
+    critical_value = tinv((1 + confidence_level) / 2, df);
+    
+    ci_normal_sub1(i,:) = [mean_normal+ - critical_value * std_normal , ...
+        mean_normal + critical_value * std_normal];
+end
+yfitM=nan(1000,5);
+load([inpath2,...
+    'GAMLSS_','t1psighc_1_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
+yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
+faf_age=age;
+load([inpath2,...
+    'GAMLSS_','t1psighc_1_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
+yfitM=predictions_quantiles; %estimated males at site i (assumes males = 1)
+fam_age=age;
+yfit=(yfitF+yfitM)/2;
+fake_age=(faf_age+fam_age)/2;
+hold on
 load([inpath2,...
     'GAMLSS_','t1psigsub1_1_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
 yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
 faf_age=age;
 load([inpath2,...
     'GAMLSS_','t1psigsub1_1_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-yfitM=predictions_quantiles;
-fam_age=age;
-yfit_neg=(yfitF+yfitM)/2;
-real_sub1_pos=yfit_neg(:,3);
-real_diff_pos_sub1=(real_sub1_pos-real_hc);
-permut_diff_pos=[];
-for i=1:1000
-    permut_diff_pos(i,:)=(fit_sub1_permut(:,i)-fit_permut(:,i)); 
-end
-for i=11:64
-    pos=find(faf_age>=i&faf_age<i+1);
-    real_sub1_pos1=mean(real_diff_pos_sub1(pos))
-    permut_diff_pos1=mean(permut_diff_pos(:,pos),2); 
-    sig_sub1_pos(i-10)=length(find( real_sub1_pos1< permut_diff_pos1))/1000;
-end
-find(sig_sub1_pos<0.05)
-q=mafdr(sig_sub1_pos,'BHFDR', true);
-
-%% sub2
-clear all
-close all
-inpath1=('D:\study\sub2\brain_age\variables_for_normative_modeling\all\');
-inpath2=('D:\study\sub2\brain_age\variables_for_normative_modeling\output_normative_modeling\all\');
-inpath3=('D:\study\sub2\brain_age\variables_for_normative_modeling\output_normative_modeling\permut_abs_new\');
-for i=1:1000
-    i
-    yfitF=nan(1000,5);
-    yfitM=nan(1000,5);
-    load([inpath3,...
-        'GAMLSS_','t2psighc_',num2str(i),'_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-    yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
-    faf_age=age;
-    load([inpath3,...
-        'GAMLSS_','t2psighc_',num2str(i),'_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-    yfitM=predictions_quantiles; %estimated males at site i (assumes males = 1)
-    fam_age=age;
-    yfit=(yfitF+yfitM)/2;
-    fake_age_permut(:,i)=(faf_age+fam_age)/2;
-    fit_permut(:,i)=yfit(:,3);
-    % sub 1
-    yfitF=nan(1000,5);
-    yfitM=nan(1000,5);
-    load([inpath3,...
-        'GAMLSS_','t2psigsub2_',num2str(i),'_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-    yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
-    faf_age=age;
-    load([inpath3,...
-        'GAMLSS_','t2psigsub2_',num2str(i),'_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-    yfitM=predictions_quantiles; %estimated males at site i (assumes males = 1)
-    fam_age=age;
-    yfit=(yfitF+yfitM)/2;
-    fit_sub1_permut(:,i)=yfit(:,3);
-end
-
-yfitM=nan(1000,5);
-load([inpath2,...
-    'GAMLSS_','t2psighc_1_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
-faf_age=age;
-load([inpath2,...
-    'GAMLSS_','t2psighc_1_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
 yfitM=predictions_quantiles; %estimated males at site i (assumes males = 1)
 fam_age=age;
-yfit=(yfitF+yfitM)/2;
-real_hc=yfit(:,3);
+yfit_pos=(yfitF+yfitM)/2;
+fake_age_neg=(faf_age+fam_age)/2;
+%
+set(gcf, 'Position', [100, 100, 1200, 600]);
+x = [fake_age', fliplr(fake_age')];
+y = [ci_normal_sub1(:,1)', fliplr(ci_normal_sub1(:,2)')];
+fill(x, y, [1, 0.7, 0.7], 'EdgeColor', 'none','facealpha',0.5);
+hold on
+x = [fake_age', fliplr(fake_age')];
+y = [(ci_normal_hc(:,1))', fliplr(ci_normal_hc(:,2)')];%y的转置在里面，之前犯了先flip再转置的错误
+fill(x, y, [0.5 0.5 0.5],'EdgeColor', 'none','facealpha',0.5); 
+hold on
+plot(fake_age,(yfit(:,3)),'k','linewidth',2.5); %plot 50th centile
+plot(fake_age_neg,(yfit_pos(:,3)),'r','linewidth',2.5); %plot 50th centile
+hold on
 
-%gap<0
-load([inpath2,...
-    'GAMLSS_','t2psigsub2_1_predicted_sex0_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-yfitF=predictions_quantiles; %estimated females at site i (assumes females = 0)
-faf_age=age;
-load([inpath2,...
-    'GAMLSS_','t2psigsub2_1_predicted_sex1_WHOLE_SAMPLE.mat'],'predictions_quantiles','age');
-yfitM=predictions_quantiles; %estimated males at site i (assumes males = 1)
-fam_age=age;
-yfit_neg=(yfitF+yfitM)/2;
-real_sub1_pos=yfit_neg(:,3);
-real_diff_pos_sub1=(real_sub1_pos-real_hc);
-permut_diff_pos=[];
-for i=1:1000
-    permut_diff_pos(i,:)=(fit_sub1_permut(:,i)-fit_permut(:,i));
-end
-% for i=1:1000
-% sig_sub_pos(i)=length(find( real_diff_pos_sub1(i)< permut_diff_pos(i,:)))/1000;
-% end
-for i=11:64
-    pos=find(faf_age>=i&faf_age<i+1);
-    real_sub1_pos1=mean(real_diff_pos_sub1(pos));
-    permut_diff_pos1=mean(permut_diff_pos(:,pos),2);
-    
-    sig_sub1_pos(i-10)=length(find( real_sub1_pos1>=permut_diff_pos1))/1000;
-end
-find(sig_sub1_pos<0.05)
-q=mafdr(sig_sub1_pos,'BHFDR', true);
+x_stars1 = 11:65;
+y_stars1 =0.7;
+plot(x_stars1, ones(size(x_stars1)) * y_stars1, '-', 'Color', [0, 0, 0], 'LineWidth', 2);
+hold on;
+plot(mean(x_stars1), y_stars1 + 0.05, '*', 'MarkerSize', 10, 'Color', [0, 0, 0]);  % 绘制星号
+set(gca, 'FontSize', 30);
