@@ -18,37 +18,24 @@ des = [age,sex,mfd];
 for i=1:287276
 [loading_sub1(:,i), b, stats] = regress_out(loading_sub1(:,i), des);
 end
-load('/HeLabData2/cxpang/DIDA/NGSR/result_xy/hamd/loading_sub_sub1_regress_remove65.mat','loading_sub1')
+save('/HeLabData2/cxpang/DIDA/NGSR/result_xy/hamd/loading_sub_sub1_regress_remove65.mat','loading_sub1')
 %% ---------- Input data ----------
-load('/HeLabData2/cxpang/DIDA/NGSR/result_xy/hamd/loading_sub_sub2_regress_remove65.mat','loading_sub2')
-X0 = loading_sub2;
-load('/home/cxpang/matlab/code/8.brain_age/using_mat/hamd_sub_sub2_remove65.mat')
-Y0behav = hamd; % sex - 0=female/1=male
-%regress hamd
-load('/home/cxpang/matlab/code/8.brain_age/using_mat/covariate_hamd_sub_sub2_remove65.mat','age','sex','site')
-des = [age,sex];
-for i=1:17
-[Y0behav(:,i), b, stats] = regress_out(Y0behav(:,i), des);
-end
-hamd=Y0behav;
-
-
-%%
 load('/HeLabData2/cxpang/DIDA/NGSR/result_xy/hamd/loading_sub_sub1_regress_remove65.mat','loading_sub1')
 X0 = loading_sub1;
 load('/home/cxpang/matlab/code/8.brain_age/using_mat/hamd_sub_sub1_remove65.mat')
 Y0behav = hamd; % sex - 0=female/1=male
 %regress hamd
-load('/home/cxpang/matlab/code/8.brain_age/using_mat/covariate_hamd_sub_sub1_remove65.mat','age','sex')
+load('/home/cxpang/matlab/code/8.brain_age/using_mat/covariate_hamd_sub_sub1 _remove65.mat','age','sex','site')
 des = [age,sex];
 for i=1:17
 [Y0behav(:,i), b, stats] = regress_out(Y0behav(:,i), des);
 end
+hamd=Y0behav;
 %%
 % consistent with 10f cv
 [my_corr,p]=corr(X0,Y0behav,'type','Pearson');
 pos = find(any(p<0.05, 2));
-%save('/HeLabData2/cxpang/DIDA/NGSR/result_xy/brain_age/sub1/p0.05/all_mask.mat','pos')
+save('/home/cxpang/matlab/code/8.brain_age/sub1_pos_0.05.mat','pos')
 for i=1:287276
     tmp(i)=i;
 end
@@ -56,8 +43,8 @@ pos=setdiff(tmp,pos);
 X0(:,pos)=[];
 
 input.grouping = zeros(size(hamd,1),1);
-pls_opts.nPerms = 100;
-pls_opts.nBootstraps =1;
+pls_opts.nPerms = 1;
+pls_opts.nBootstraps =1000;
 % if you want to regress nuisance variables, do it here
 
 % --- brain data ---
@@ -159,18 +146,10 @@ save_opts.hl_stable = 1; % binary variable indicating if stable bootstrap scores
 
 % --- Customized figure size for behavior bar plots ---
 save_opts.fig_pos_behav = [440   606   320   192];
-%%
+%% analyse the weight
 res = myPLS_analysis(input,pls_opts);
-save('/HeLabData2/cxpang/DIDA/NGSR/result_xy/bootstrap/sub1_noboot.mat','res','save_opts')
-%% boot
-res = myPLS_analysis(input,pls_opts);
-load('/HeLabData2/cxpang/DIDA/NGSR/result_xy/bootstrap/sub1.mat','res','save_opts')
-myPLS_plot_results(res,save_opts);
-%%
-load('/HeLabData2/cxpang/DIDA/NGSR/result_xy/bootstrap/sub1.mat','res','save_opts')
-boot=res.boot_results.LC_behav_loadings_boot;
-boot=boot(:,1,:);
-boot_tmp=squeeze(boot);
+save('/HeLabData2/cxpang/DIDA/NGSR/result_xy/bootstrap/sub1_boot.mat','res','save_opts')
+
 
 l=res.boot_results.LC_img_loadings_lB(:,1);
 r=res.boot_results.LC_img_loadings_uB(:,1);
@@ -195,12 +174,12 @@ for i=1:17
         k=k+1;
     end
 end
-%%
+%% back to the brain map
 method='NGSR'
 voxel_num=45892;
 network_num=18;
 xweight=zeros(287276,1);
-load('/home/cxpang/matlab/code/8.brain_age/sub2_pos_0.05.mat','pos')
+load('/home/cxpang/matlab/code/8.brain_age/sub1_pos_0.05.mat','pos')
 xweight(pos)=weight;
 load(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/hamd/loading_pos_all.mat'),'pos')
 x_tmp=zeros(voxel_num*network_num,1);
@@ -212,8 +191,7 @@ tmp2=setdiff(tmp,pos);
 x_tmp(tmp2)=xweight;
 addpath(genpath('/home/cxpang/matlab/Collaborative_Brain_Decomposition-master/lib/NIfTI_20140122'))
 analyse=reshape(x_tmp,[voxel_num,network_num]);
-%%
-load('/HeLabData2/cxpang/DIDA/NGSR/result_xy/hamdsub_weight/analyse_sub1_boot_remove65.mat','analyse')
+
 %one map
 one=abs(analyse);
 all=mean(one,2);
