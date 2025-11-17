@@ -12,8 +12,7 @@ import os
 import sys
 
 sys.path.append('/home/cxpang/matlab/code/4.HAMD_correlation/Subscale/Functions');
-import cca
-import cca_sub2
+import cca %the function named cca, while actually using plsr to do the correlation
 import numpy
 from sklearn.linear_model import Lasso
 import pandas as pd
@@ -39,7 +38,7 @@ if __name__ == '__main__':
 
     # #Range of parameters
     # ComponentNumber_Range = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17];
-    ComponentNumber_Range = 3;  # here represent the component number, in permutation only 1 component is enough
+    ComponentNumber_Range = 1;  # here represent the component number, in permutation only 1 component is enough
     FoldQuantity = 10;
     Parallel_Quantity = 10;
     AtlasLoading_Folder = ResultsFolder + '/cca/AtlasLoading';
