@@ -360,11 +360,11 @@ permut_diff_neg=[];
 for i=1:1000
     permut_diff_neg(i,:)=(fit_sub1_permutn(:,i)-fit_permutn(:,i)); 
 end
-for i=11:64
+for i=10:65
     pos=find(age>=i&age<i+1);
     real_sub1_neg1=mean(real_diff_neg_sub1(pos))
     permut_diff_neg1=mean(permut_diff_neg(:,pos),2); 
-    sig_sub1_neg(i-10)=length(find( real_sub1_neg1< permut_diff_neg1))/1000;
+    sig_sub1_neg(i-9)=length(find( real_sub1_neg1< permut_diff_neg1))/1000;
 end
 find(sig_sub1_neg<0.05)
 q=mafdr(sig_sub1_neg,'BHFDR', true);
