@@ -1,6 +1,3 @@
-
-%%
-addpath(genpath('/home/cxpang/matlab/code/8.brain_age'));
 method='NGSR'
 voxel_num=45892;
 network_num=18;
@@ -117,9 +114,9 @@ load(strcat('/HeLabData2/cxpang/DIDA/NGSR/result_xy/brain_age/csutreatment_res_r
     yfit=glmval(beta,age_real,'identity');
     adjusted_mdd_all_gap1=mdd_all_gap-yfit; % corrected age gap
     save(strcat('/HeLabData2/cxpang/DIDA/NGSR/result_xy/brain_age/csuadgap_base_',num2str(s),'.mat'),'adjusted_mdd_all_gap1')
-    des=[age,sex,mfd_base];
+    des=[mfd_base];
     [adjusted_mdd_all_gap1, b, stats] = regress_out(adjusted_mdd_all_gap1, des);
-    des=[age,sex,mfd_after];
+    des=[mfd_after];
     [adjusted_mdd_all_gap, b, stats] = regress_out(adjusted_mdd_all_gap, des);
     data{s} =[(adjusted_mdd_all_gap1),(adjusted_mdd_all_gap)];
 % filename =strcat(num2str(s), '_mfd_treatmentcsu.txt');
@@ -141,23 +138,4 @@ for i=1:18
 end
 q1=mafdr(p1,'BHFDR', true);
 q2=mafdr(p2,'BHFDR', true);
-q3=mafdr(p3,'BHFDR', true);
-load('/HeLabData2/cxpang/DIDA/NGSR/result_xy/brain_age/hamd_base.mat')
-load('/HeLabData2/cxpang/treatment_NGSR/CSU/predict/deltahamd.mat','deltahamd')
-des = [age,sex];
-rate=zeros(43,1);
-rate=deltahamd./hamd;
-rate=deltahamd;
-[rate, b, stats] = regress_out(rate, des);
-[deltahamd, b, stats] = regress_out(deltahamd, des);
-delta1=zeros(18,length(find(group==2)));
-delta2=zeros(18,length(find(group==1)));
-for s=1:18
-    delta1(s,:)=data{s}(find(group==2),2)-data{s}(find(group==2),1);
-    deltahamd1=rate(find(group==2));
-    [r1(s),p1(s)]=corr((delta1(s,:))',deltahamd1);
-    
-    delta2(s,:)=data{s}(find(group==1),2)-data{s}(find(group==1),1);
-    deltahamd2=rate(find(group==1));
-    [r2(s),p2(s)]=corr(delta2(s,:)',deltahamd2);
-end
+
