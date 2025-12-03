@@ -113,7 +113,7 @@ geneindex1=geneindex1(ind1);
 % end
 % fclose(fid1);
 
-% % permutation test
+% % permutation test using brainsmash to generate the surrogate maps for t value
 load('D:\study\sub2\gene\sub2\surrogate_g1.mat')
 hdr_mask = spm_vol('D:\study\sub2\liu\GMMask_3mm.nii');
 vol_mask = spm_read_vols(hdr_mask);
