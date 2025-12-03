@@ -85,7 +85,7 @@ parfor i=1:bootnum
     %res(i,:)=myresample; %store resampling out of interest
     Xr=X(myresample,:); % define X for resampled regions
     Yr=Y(myresample,:); % define Y for resampled regions
-    [XL,YL,XS,YS,BETA,PCTVAR,MSE,stats]=plsregress(Xr,Yr,dim); %perform PLS for resampled data
+    [XL,YL,XS,YS,BETA,PCTVARb,MSE,stats]=plsregress(Xr,Yr,dim); %perform PLS for resampled data
 
     temp=stats.W(:,1);%extract PLS1 weights
     newW=temp(x1); %order the newly obtained weights the same way as initial PLS 
