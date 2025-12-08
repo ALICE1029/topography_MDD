@@ -219,3 +219,8 @@ for i=1:10
     y_tmp=test_score(pos);
     save(strcat('/home/cxpang/matlab/code/8.brain_age/plot/mdd_',num2str(i),'xy'),'x_tmp','y_tmp')
 end
+load('/home/cxpang/matlab/code/8.brain_age/adjusted_mdd_all_gap_remove65sex.mat','adjusted_mdd_all_gap')
+Idx=[];
+Idx(find(adjusted_mdd_all_gap<0))=1;
+Idx(find(adjusted_mdd_all_gap>0))=2;
+save('/home/cxpang/matlab/code/8.brain_age/index_all_remove65sex.mat','Idx')
