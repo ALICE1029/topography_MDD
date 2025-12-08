@@ -63,7 +63,7 @@ We evaluated the association between topography and clinical scores using PLS fo
 
 ## gene
 
-In this analysis, we used the revised script from Xia et al. Biological Psychitary 2022, ([mingruixia/MDD_ConnectomeGradient](https://github.com/mingruixia/MDD_ConnectomeGradient)). The main script is named gene_PLS.m and see the code in this file for more details.
+In this analysis, we used the revised script from Xia et al. Molecular Psychitary 2022, ([mingruixia/MDD_ConnectomeGradient](https://github.com/mingruixia/MDD_ConnectomeGradient)). 
 
 1. The Gene expression data from the Allen Institute for Brain Science was first preprocessed by using AHBAprocessing (https://github.com/BMHLab/AHBAprocessing), obtaining the gene expression profile for the Glasser-360 atlas.
 2. Perform PLS analysis to examine the association between the BAG-related map and gene expression profiles.
