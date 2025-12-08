@@ -21,9 +21,9 @@ condi='sub1'
 domi_pos=find(brain_new=='OFC'|brain_new=='ITC'|brain_new=='STC');
 domi_notpos=find(~(brain_new=='OFC'|brain_new=='ITC'|brain_new=='STC'));
 
-condi='sub2'
-domi_pos=find(brain_new=='M1C'|brain_new=='V1C'|brain_new=='VFC'|brain_new=='HIP'|brain_new=='AMY'|brain_new=='DFC');
-domi_notpos=find(~(brain_new=='M1C'|brain_new=='V1C'|brain_new=='VFC'|brain_new=='HIP'|brain_new=='AMY'|brain_new=='DFC'));
+%condi='sub2'
+%domi_pos=find(brain_new=='M1C'|brain_new=='V1C'|brain_new=='VFC'|brain_new=='HIP'|brain_new=='AMY'|brain_new=='DFC');
+%domi_notpos=find(~(brain_new=='M1C'|brain_new=='V1C'|brain_new=='VFC'|brain_new=='HIP'|brain_new=='AMY'|brain_new=='DFC'));
 
 %%
 load('D:\study\sub2\brain_age\brain_span\neurodev_proc.mat');
