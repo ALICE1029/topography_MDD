@@ -49,4 +49,4 @@ iterNum = 30;% same with cui
 calcGrp = 0;
 parforOn = 0;
 sbj_num=1410;
-deployFuncMvnmfL21p1_func_vol(path,file_name,sbj_num,maskFile,prepDataFile,outDir,resId,initName,K,alphaS21,alphaL,vxI,spaR,ard,eta,iterNum,calcGrp,parforOn);
+deployFuncMvnmfL21p1_func_vol(path,file_name,list_cell,maskFile,prepDataFile,outDir,resId,initName,K,alphaS21,alphaL,vxI,spaR,ard,eta,iterNum,calcGrp,parforOn);
