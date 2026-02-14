@@ -4,7 +4,7 @@ This repository provides core code and relevant toolboxes for data analysis in t
 
 ## Overview
 
-Content includes standalone software, source code, and data. The project is structured into four parts corresponding to the major analyses in the article, including brain age prediction, brain, clinical and gene expression association analysis. Due to size limitation, the script relavent data can be found in [[https://pan.bnu.edu.cn/l/A1NI3c](https://pan.bnu.edu.cn/l/91maR3)](https://pan.bnu.edu.cn/l/B19dUU).
+Content includes standalone software, source code, and data. The project is structured into four parts corresponding to the major analyses in the article, including brain age prediction, brain, clinical and gene expression association analysis. Due to size limitation, the script relavent data can be found in https://pan.bnu.edu.cn/l/B19dUU.
 
 ## Toolboxes
 
