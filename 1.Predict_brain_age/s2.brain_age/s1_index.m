@@ -4,7 +4,7 @@ network_num=18;
 method='NGSR';
 addpath(genpath('/home/cxpang/matlab/combat'))
 %% hc index_generate
-load ('/HeLabData2/cxpang/DIDA/using_mat/variable.mat')
+load ('/HeLabData2/cxpang/DIDA/using_mat/glmvariable.mat')
 load ('/HeLabData2/cxpang/DIDA/using_mat/site.mat')
 new_index=find(age>=65);
 age(new_index)=[];
