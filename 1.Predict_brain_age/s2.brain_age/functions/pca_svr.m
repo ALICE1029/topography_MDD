@@ -31,7 +31,6 @@ for j = 1:FoldQuantity
     co_train=covariate;
     co_train(Origin_ID{j},:)=[];
     %regress out covariate
-    Covariates_test = covariate(Origin_ID{j}, :);
     Covariates_training = covariate;
     Covariates_training(Origin_ID{j}, :) = [];
     
