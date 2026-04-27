@@ -1,5 +1,4 @@
 %%
-load dida
 voxel_num=45892;
 network_num=18;
 sbj_num=2170;
@@ -171,7 +170,6 @@ save(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/betweengroup_differenc
 save(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/betweengroup_difference/corr_sub2_1_grf_remove65sexmask.mat'),'z_grf','t_grf')
 %% result
 load(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/betweengroup_difference/corr_sub2_1_grf_remove65sexmask.mat'))
-load(strcat('/HeLabData2/cxpang/DIDA/using_mat/grf_mask_',method,'.mat'))
 num=zeros(2,network_num);
 z_map=z_grf;
 pos_sig=cell(network_num,1);
@@ -326,7 +324,6 @@ save(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/betweengroup_differenc
 %% result
 load(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/betweengroup_difference/corr_sub2_2_grf_remove65sex.mat'))
 num=zeros(2,network_num);
-%percentage=zeros(2,network_num);
 z_map=z_grf;
 pos_sig=cell(network_num,1);
 pos_nosig=cell(network_num,1);
