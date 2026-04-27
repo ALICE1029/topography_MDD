@@ -322,7 +322,7 @@ end
 save(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/betweengroup_difference/corr_sub2_2_sta_remove65sexmask.mat'),'coor_x','coor_y','coor_z','my_size','Z','br')
 save(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/betweengroup_difference/corr_sub2_2_grf_remove65sexmask.mat'),'z_grf','t_grf')
 %% result
-load(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/betweengroup_difference/corr_sub2_2_grf_remove65sex.mat'))
+load(strcat('/HeLabData2/cxpang/DIDA/',method,'/result_xy/betweengroup_difference/corr_sub2_2_grf_remove65sexmask.mat'))
 num=zeros(2,network_num);
 z_map=z_grf;
 pos_sig=cell(network_num,1);
