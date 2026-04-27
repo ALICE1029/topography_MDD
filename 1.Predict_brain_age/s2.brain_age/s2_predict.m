@@ -1,7 +1,6 @@
 %%
 addpath(genpath('/home/cxpang/matlab/surfstat'));
 method='NGSR'
-load dida
 voxel_num=45892;
 network_num=18;
 data_dir='/HeLabData2/cxpang/DIDA/NGSR/result_xy/brain_age/';
